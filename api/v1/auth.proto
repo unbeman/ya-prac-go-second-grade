@@ -1,0 +1,30 @@
+syntax = "proto3";
+
+package pass_keeper;
+
+
+option go_package = "github.com/unbeman/ya-prac-go-second-grade/api/v1";
+
+
+message RegisterRequest{
+  string login = 1;
+  string key_hash = 2;
+}
+
+message RegisterResponse{
+  string access_token = 1;
+}
+
+message LoginRequest{
+  string login = 1;
+  string key_hash = 2;
+}
+
+message LoginResponse{
+  string access_token = 1;
+}
+
+service AuthService{
+  rpc Register(RegisterRequest) returns (RegisterResponse);
+  rpc Login(LoginRequest) returns (LoginResponse);
+}
