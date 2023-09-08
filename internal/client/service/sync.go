@@ -3,12 +3,13 @@ package service
 import (
 	"context"
 	"fmt"
+	"sync"
+	"time"
+
 	uuid "github.com/satori/go.uuid"
 	log "github.com/sirupsen/logrus"
 	"google.golang.org/grpc"
 	"google.golang.org/protobuf/types/known/timestamppb"
-	"sync"
-	"time"
 
 	pb "github.com/unbeman/ya-prac-go-second-grade/api/v1"
 	"github.com/unbeman/ya-prac-go-second-grade/internal/client/model"

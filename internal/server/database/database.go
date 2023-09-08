@@ -2,6 +2,7 @@ package database
 
 import (
 	"context"
+
 	uuid "github.com/satori/go.uuid"
 
 	"github.com/unbeman/ya-prac-go-second-grade/internal/server/config"

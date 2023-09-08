@@ -2,8 +2,9 @@ package server
 
 import (
 	"fmt"
-	log "github.com/sirupsen/logrus"
 	"sync"
+
+	log "github.com/sirupsen/logrus"
 
 	"github.com/unbeman/ya-prac-go-second-grade/internal/server/config"
 	"github.com/unbeman/ya-prac-go-second-grade/internal/server/database"

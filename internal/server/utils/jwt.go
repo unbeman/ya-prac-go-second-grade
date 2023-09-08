@@ -3,11 +3,11 @@ package utils
 import (
 	"crypto/rsa"
 	"fmt"
-	uuid "github.com/satori/go.uuid"
 	"os"
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
+	uuid "github.com/satori/go.uuid"
 
 	"github.com/unbeman/ya-prac-go-second-grade/internal/server/config"
 	"github.com/unbeman/ya-prac-go-second-grade/internal/server/model"
@@ -20,8 +20,7 @@ type UserClaims struct {
 }
 
 type JWTManager struct {
-	privateKey *rsa.PrivateKey
-	//publicKey     *rsa.PublicKey
+	privateKey    *rsa.PrivateKey
 	tokenDuration time.Duration
 }
 
@@ -41,8 +40,7 @@ func NewJWTManager(cfg config.JWT) (*JWTManager, error) {
 	}
 
 	return &JWTManager{
-		privateKey: privateKey,
-		//publicKey:     publicKey,
+		privateKey:    privateKey,
 		tokenDuration: cfg.AccessTokenExpiresIn,
 	}, nil
 }

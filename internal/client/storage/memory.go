@@ -1,9 +1,10 @@
 package storage
 
 import (
-	uuid "github.com/satori/go.uuid"
 	"strings"
 	"sync"
+
+	uuid "github.com/satori/go.uuid"
 
 	"github.com/unbeman/ya-prac-go-second-grade/internal/client/model"
 )

@@ -1,10 +1,10 @@
 package model
 
 import (
-	//"github.com/google/uuid"
+	"time"
+
 	uuid "github.com/satori/go.uuid"
 	"gorm.io/gorm"
-	"time"
 )
 
 type Credential struct {

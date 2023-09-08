@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/base64"
 	"errors"
+
 	uuid "github.com/satori/go.uuid"
 
 	pb "github.com/unbeman/ya-prac-go-second-grade/api/v1"

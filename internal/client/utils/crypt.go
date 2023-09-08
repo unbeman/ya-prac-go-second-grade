@@ -6,10 +6,11 @@ import (
 	"crypto/rand"
 	"crypto/sha256"
 	"encoding/base64"
+	"io"
+
 	log "github.com/sirupsen/logrus"
 	"golang.org/x/crypto/hkdf"
 	"golang.org/x/crypto/scrypt"
-	"io"
 )
 
 //todo: error desc

@@ -2,6 +2,7 @@ package utils
 
 import (
 	"crypto/tls"
+
 	"google.golang.org/grpc/credentials"
 
 	"github.com/unbeman/ya-prac-go-second-grade/internal/server/config"

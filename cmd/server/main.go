@@ -1,10 +1,11 @@
 package main
 
 import (
-	log "github.com/sirupsen/logrus"
 	"os"
 	"os/signal"
 	"syscall"
+
+	log "github.com/sirupsen/logrus"
 
 	"github.com/unbeman/ya-prac-go-second-grade/internal/server"
 	"github.com/unbeman/ya-prac-go-second-grade/internal/server/config"

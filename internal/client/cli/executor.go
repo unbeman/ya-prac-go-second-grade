@@ -3,10 +3,11 @@ package cli
 import (
 	"errors"
 	"fmt"
-	"github.com/mdp/qrterminal/v3"
-	uuid "github.com/satori/go.uuid"
 	"os"
 	"strings"
+
+	"github.com/mdp/qrterminal/v3"
+	uuid "github.com/satori/go.uuid"
 
 	"github.com/unbeman/ya-prac-go-second-grade/internal/client"
 	"github.com/unbeman/ya-prac-go-second-grade/internal/client/model"

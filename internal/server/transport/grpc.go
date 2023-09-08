@@ -3,9 +3,10 @@ package transport
 
 import (
 	"fmt"
+	"net"
+
 	log "github.com/sirupsen/logrus"
 	"google.golang.org/grpc"
-	"net"
 
 	pb "github.com/unbeman/ya-prac-go-second-grade/api/v1"
 	"github.com/unbeman/ya-prac-go-second-grade/internal/server/config"
