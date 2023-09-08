@@ -42,10 +42,12 @@ func (s *MemStore) SearchCredentials(query string) (map[uuid.UUID]model.Credenti
 	s.RLock()
 	defer s.RUnlock()
 
+	lowQuery := strings.ToLower(query)
+
 	result := map[uuid.UUID]model.Credential{}
 
 	for id, cred := range s.credentials {
-		if strings.Contains(cred.MetaData, query) {
+		if strings.Contains(strings.ToLower(cred.MetaData), lowQuery) {
 			result[id] = *cred
 		}
 	}
