@@ -47,12 +47,12 @@ func (s Auth) Login(ctx context.Context, input *pb.LoginRequest) (*pb.LoginRespo
 		return nil, GenStatusError(err)
 	}
 
-	token, err := s.JwtManager.Generate(user, true)
+	token, err := s.JwtManager.Generate(user, *user.OtpEnabled)
 	if err != nil {
 		return nil, GenStatusError(err)
 	}
 
-	out := &pb.LoginResponse{AccessToken: token}
+	out := &pb.LoginResponse{AccessToken: token, Enforce_2FA: *user.OtpEnabled}
 	return out, nil
 }
 

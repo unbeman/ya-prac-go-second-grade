@@ -13,7 +13,6 @@ var (
 	KeyPathDefault  = "cert/server.key"
 
 	AccessTokenPrivateKeyFileDefault = "cert/jwt_key.pem"
-	AccessTokenPublicKeyFileDefault  = "cert/jwt_key_public.pem"
 	AccessTokenExpiresInDefault      = 60 * time.Minute
 
 	ProjectDefault = "passkeeper"
@@ -26,7 +25,6 @@ type PG struct {
 
 type JWT struct {
 	AccessTokenPrivateKeyFile string        `env:"ACCESS_TOKEN_PRIVATE_KEY_FILE"`
-	AccessTokenPublicKeyFile  string        `env:"ACCESS_TOKEN_PUBLIC_KEY_FILE"`
 	AccessTokenExpiresIn      time.Duration `env:"ACCESS_TOKEN_EXPIRED_IN"`
 	//AccessTokenMaxAge     int           `env:"ACCESS_TOKEN_MAXAGE"`
 }
@@ -59,7 +57,6 @@ func GetServerConfig() (ServerConfig, error) {
 		Postgres: PG{DSN: DSNDefault},
 		JWT: JWT{
 			AccessTokenPrivateKeyFile: AccessTokenPrivateKeyFileDefault,
-			AccessTokenPublicKeyFile:  AccessTokenPublicKeyFileDefault,
 			AccessTokenExpiresIn:      AccessTokenExpiresInDefault,
 		},
 		OTP: OTP{

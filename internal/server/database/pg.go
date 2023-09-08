@@ -7,12 +7,11 @@ import (
 	uuid "github.com/satori/go.uuid"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
 
 	"github.com/unbeman/ya-prac-go-second-grade/internal/server/config"
 	"github.com/unbeman/ya-prac-go-second-grade/internal/server/model"
 )
-
-const BatchSize = 100
 
 type pg struct {
 	conn      *gorm.DB
@@ -99,7 +98,7 @@ func (db *pg) DeleteUserSecrets(ctx context.Context, user model.User) error {
 }
 
 func (db *pg) connect(dsn string) error {
-	conn, err := gorm.Open(postgres.Open(dsn))
+	conn, err := gorm.Open(postgres.Open(dsn), &gorm.Config{Logger: logger.Default.LogMode(logger.Error)})
 	if err != nil {
 		return err
 	}

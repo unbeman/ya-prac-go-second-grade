@@ -55,7 +55,7 @@ func (s OTP) OTPVerify(ctx context.Context, input *pb.OTPVerifyRequest) (*pb.OTP
 	if err != nil {
 		return nil, GenStatusError(err)
 	}
-	log.Info("OTPVerify", user.Login, user.OtpVerified, user.OtpEnabled)
+	log.Info("OTPVerify", user.Login, user.OtpVerified, *user.OtpEnabled)
 	_, err = s.verify(ctx, input.Token, user)
 	if err != nil {
 		return nil, GenStatusError(err)
@@ -97,7 +97,7 @@ func (s OTP) OTPDisable(ctx context.Context, input *pb.OTPDisableRequest) (*pb.O
 
 	//todo: check input
 
-	err = s.disable(ctx, user)
+	user, err = s.disable(ctx, user)
 	if err != nil {
 		return nil, GenStatusError(err)
 	}
@@ -140,8 +140,8 @@ func (s OTP) verify(ctx context.Context, token string, user model.User) (model.U
 		return user, ErrInvalidOTPToken
 	}
 
-	user.OtpEnabled = true
-	user.OtpVerified = true
+	*user.OtpEnabled = true
+	*user.OtpVerified = true
 	user, err := s.db.UpdateUser(ctx, user)
 	if err != nil {
 		return user, err
@@ -159,14 +159,14 @@ func (s OTP) validate(token, secret string) error {
 	return nil
 }
 
-func (s OTP) disable(ctx context.Context, user model.User) error {
-	user.OtpEnabled = false
-	_, err := s.db.UpdateUser(ctx, user)
+func (s OTP) disable(ctx context.Context, user model.User) (model.User, error) {
+	*user.OtpEnabled = false
+	user, err := s.db.UpdateUser(ctx, user)
 	if err != nil {
-		return err
+		return user, err
 	}
 
-	return nil
+	return user, nil
 }
 
 func getUserFromContext(ctx context.Context) (model.User, error) {

@@ -22,6 +22,7 @@ message LoginRequest{
 
 message LoginResponse{
   string access_token = 1;
+  bool enforce_2FA = 2;
 }
 
 service AuthService{

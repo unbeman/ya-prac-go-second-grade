@@ -117,6 +117,7 @@ func (s *SyncService) LoadFromServer() {
 		uuID, err := uuid.FromString(serverCred.GetLocalId())
 		if err != nil {
 			log.Error("LoadFromServer: ", err)
+			return
 		}
 
 		cred := model.Credential{

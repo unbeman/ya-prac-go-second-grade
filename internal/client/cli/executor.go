@@ -1,6 +1,7 @@
 package cli
 
 import (
+	"errors"
 	"fmt"
 	"github.com/mdp/qrterminal/v3"
 	uuid "github.com/satori/go.uuid"
@@ -9,6 +10,7 @@ import (
 
 	"github.com/unbeman/ya-prac-go-second-grade/internal/client"
 	"github.com/unbeman/ya-prac-go-second-grade/internal/client/model"
+	"github.com/unbeman/ya-prac-go-second-grade/internal/client/service"
 )
 
 type exec struct {
@@ -70,6 +72,8 @@ func (e exec) register(args []string) {
 	if err != nil {
 		fmt.Println("error occurred: ", err)
 	}
+
+	e.app.Sync.StartSync()
 }
 
 func (e exec) login(args []string) {
@@ -83,11 +87,16 @@ func (e exec) login(args []string) {
 	}
 
 	err := e.app.Auth.Login(args[1], args[2])
+	if errors.Is(err, service.ErrEnforceValidateOTP) {
+		fmt.Println("please validate 2fa code")
+		return
+	}
 	if err != nil {
 		fmt.Println("error occurred: ", err)
 		return
 	}
-	fmt.Println("please validate 2fa code")
+
+	e.app.Sync.StartSync()
 }
 
 func (e exec) generate2FA(args []string) {
@@ -114,10 +123,10 @@ func (e *exec) verify2FA(args []string) {
 	err := e.app.F2a.Verify(args[1])
 	if err != nil {
 		fmt.Println("error occurred: ", err)
+		return
 	} else {
 		fmt.Println("successful verified")
 	}
-	e.app.Sync.StartSync()
 }
 
 func (e *exec) validateTOTP(args []string) {
@@ -129,6 +138,7 @@ func (e *exec) validateTOTP(args []string) {
 	err := e.app.F2a.Validate(args[1])
 	if err != nil {
 		fmt.Println("error occurred: ", err)
+		return
 	} else {
 		fmt.Println("successful validated")
 	}
@@ -410,7 +420,7 @@ func printLogin(cred model.Credential) {
 	splittedMeta := strings.Split(cred.MetaData, ":")
 
 	site, login := splittedMeta[0], splittedMeta[1]
-	fmt.Printf("Site: %s\n	Login: %s\n		Password: %s\n", site, login, string(cred.Decrypted))
+	fmt.Printf("Site: %s\nLogin: %s\nPassword: %s\n", site, login, string(cred.Decrypted))
 }
 
 func printBank(cred model.Credential) {

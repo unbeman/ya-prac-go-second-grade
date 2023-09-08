@@ -36,13 +36,6 @@ func NewJWTManager(cfg config.JWT) (*JWTManager, error) {
 		return nil, fmt.Errorf("could not parse key: %w", err)
 	}
 
-	//rawPublicKey, err := os.ReadFile(cfg.AccessTokenPrivateKeyFile)
-	//if err != nil {
-	//	return nil, fmt.Errorf("could not read file: %w", err)
-	//}
-
-	//publicKey, err := jwt.ParseRSAPublicKeyFromPEM(rawPrivateKey)
-
 	if err != nil {
 		return nil, fmt.Errorf("could not parse key: %w", err)
 	}
@@ -64,7 +57,7 @@ func (m *JWTManager) Generate(user model.User, shouldF2A bool) (string, error) {
 			NotBefore: now.Unix(),
 		},
 		UserID:     user.ID,
-		OtpEnforce: shouldF2A && user.OtpEnabled,
+		OtpEnforce: shouldF2A && *user.OtpEnabled,
 	}
 
 	token, err := jwt.NewWithClaims(jwt.SigningMethodRS256, claims).SignedString(m.privateKey)

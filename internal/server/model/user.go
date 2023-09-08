@@ -6,8 +6,8 @@ type User struct {
 	Login          string `gorm:"uniqueIndex;not null"`
 	MasterKey2Hash string // master key twice hash
 
-	OtpEnabled  bool `gorm:"default:false;"`
-	OtpVerified bool `gorm:"default:false;"`
+	OtpEnabled  *bool `gorm:"type:bool;default:false;"`
+	OtpVerified *bool `gorm:"type:bool;default:false;"`
 	OtpSecret   string
 	OtpAuthUrl  string
 

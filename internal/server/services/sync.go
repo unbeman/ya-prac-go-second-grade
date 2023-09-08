@@ -75,7 +75,7 @@ func (s *Sync) Load(ctx context.Context, input *pb.LoadRequest) (*pb.LoadRespons
 	out := pb.LoadResponse{}
 	for _, cred := range creds {
 		oc := pb.Credential{
-			LocalId:   cred.LocalID.String(),
+			LocalId:   cred.ID.String(),
 			Type:      string(cred.Type),
 			MetaData:  cred.MetaData,
 			Secret:    cred.Secret,

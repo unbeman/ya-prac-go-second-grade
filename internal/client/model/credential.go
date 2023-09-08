@@ -1,6 +1,7 @@
 package model
 
 import (
+	//"github.com/google/uuid"
 	uuid "github.com/satori/go.uuid"
 	"gorm.io/gorm"
 	"time"
@@ -22,6 +23,8 @@ type Credential struct {
 }
 
 func (c *Credential) BeforeCreate(tx *gorm.DB) error {
-	c.ID = uuid.NewV4()
+	if c.ID == uuid.Nil {
+		c.ID = uuid.NewV4()
+	}
 	return nil
 }

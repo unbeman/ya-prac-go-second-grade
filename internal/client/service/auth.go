@@ -14,8 +14,9 @@ import (
 )
 
 var (
-	ErrInternal          = errors.New("internal error")
-	ErrLoginAlreadyExist = errors.New("login already exists")
+	ErrInternal           = errors.New("internal error")
+	ErrLoginAlreadyExist  = errors.New("login already exists")
+	ErrEnforceValidateOTP = errors.New("2Fa enabled; please, validate code")
 )
 
 type AuthService struct {
@@ -118,6 +119,10 @@ func (s *AuthService) Login(login, masterPassword string) error {
 
 	s.setMasterKey(masterKey)
 	s.SetAccessToken(out.GetAccessToken())
+
+	if out.GetEnforce_2FA() {
+		return ErrEnforceValidateOTP
+	}
 
 	return nil
 }

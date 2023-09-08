@@ -11,5 +11,4 @@ type Credential struct {
 	Type     CredentialType `gorm:"type:credential_type;not null"`
 	MetaData string
 	Secret   []byte //encrypted by client's master password
-	LocalID  uuid.UUID
 }
