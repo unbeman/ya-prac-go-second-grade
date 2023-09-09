@@ -42,7 +42,7 @@ todo: про устройство клиента и сервера на го
 Пример работы:
 
 ```
->>>register krolick makenkayaNoraVLesu
+>>>register krolick malenkayaNoraVLesu
 ```
 
 ```
@@ -60,15 +60,21 @@ error occurred:  login already exists
 
 Пример работы:
 
+Если 2FA не включена
+
 ```
->>>login unbeman incorrectPassword
+>>>login unbeman correctPassword
 successfully logged in.
 ```
+
+Если 2FA включена
 
 ```
 >>>login unbeman master
 please validate 2fa code
 ```
+
+Если введен неправильный пароль
 
 ```
 >>>login unbeman incorrectPassword
@@ -110,27 +116,33 @@ error occurred:  rpc error: code = InvalidArgument desc = invalid login or passw
 █████████████████████████████████████████████████
 ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
 Secret key:  OTEPWHIQPNXIYA5R67FHZEZGFQ5DMAMU
-URL:  otpauth://totp/passkeeper:admin@passkeeper?algorithm=SHA1&digits=6&issuer=passkeeper&period=30&secret=OTEPWHIQPNXIYA5R67FHZEZGFQ5DMAMU
-
+URL:  otpauth://totp/passkeeper:unbeman?algorithm=SHA1&digits=6&issuer=passkeeper&period=30&secret=OTEPWHIQPNXIYA5R67FHZEZGFQ5DMAMU
+please verify token to enable 2FA
 ```
 
 ---
 
 ### `verifyTOTP {code}`
 
-Проверяет что подключение двухфакторной аутентификации успешно выполнено.
+Проверяет что подключение двухфакторной аутентификации выполнено успешно.
+
+```
+>>>verifyTOTP 881121
+successful verified
+```
 
 ---
 
 
 ### `validateTOTP {code}`
 
-Валидирует код от аутентификатора. Необходимо вводить каждый раз после `login`, если включена 2FA.
+Проверяет код от аутентификатора. Необходимо вводить каждый раз после `login`, если включена 2FA.
 Запускает фоновую синхронизацию данных, в случае успеха.
 
 ```
 >>>validateTOTP 529468
 successful validated
+successful logged in
 ```
 
 ```

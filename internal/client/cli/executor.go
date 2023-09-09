@@ -72,8 +72,9 @@ func (e exec) register(args []string) {
 	err := e.app.Auth.Register(args[1], args[2])
 	if err != nil {
 		fmt.Println("error occurred: ", err)
+		return
 	}
-
+	fmt.Println("successful registered")
 	e.app.Sync.StartSync()
 }
 
@@ -96,7 +97,7 @@ func (e exec) login(args []string) {
 		fmt.Println("error occurred: ", err)
 		return
 	}
-
+	fmt.Println("successful logged in")
 	e.app.Sync.StartSync()
 }
 
@@ -107,12 +108,11 @@ func (e exec) generate2FA(args []string) {
 		return
 	}
 
-	qrterminal.Generate(url, qrterminal.L, os.Stdout)
-	fmt.Println()
 	qrterminal.GenerateHalfBlock(url, qrterminal.L, os.Stdout)
 
 	fmt.Println("Secret key: ", secret)
 	fmt.Println("URL: ", url)
+	fmt.Println("please verify token to enable 2FA")
 }
 
 func (e *exec) verify2FA(args []string) {
@@ -140,9 +140,10 @@ func (e *exec) validateTOTP(args []string) {
 	if err != nil {
 		fmt.Println("error occurred: ", err)
 		return
-	} else {
-		fmt.Println("successful validated")
 	}
+
+	fmt.Println("successful validated")
+	fmt.Println("successful logged in")
 
 	e.app.Sync.StartSync()
 }
