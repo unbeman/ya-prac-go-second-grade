@@ -20,7 +20,6 @@ type OTP struct {
 	db         database.Database
 	jwtManager *utils.JWTManager
 	project    string
-	account    string
 }
 
 // NewOTPService setups new OTP instance.
@@ -28,7 +27,6 @@ func NewOTPService(cfg config.OTP, db database.Database, jwtManager *utils.JWTMa
 	return &OTP{
 		db:         db,
 		project:    cfg.Project,
-		account:    cfg.Account,
 		jwtManager: jwtManager,
 	}
 }
@@ -114,7 +112,7 @@ func (s OTP) generate(ctx context.Context, user model.User) (model.OTPOutput, er
 
 	key, err := totp.Generate(totp.GenerateOpts{
 		Issuer:      s.project,
-		AccountName: s.account,
+		AccountName: user.Login,
 	})
 
 	if err != nil {

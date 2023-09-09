@@ -17,7 +17,6 @@ var (
 	AccessTokenExpiresInDefault      = 60 * time.Minute
 
 	ProjectDefault = "passkeeper"
-	AccountDefault = "admin@passkeeper"
 )
 
 type PG struct {
@@ -32,7 +31,6 @@ type JWT struct {
 
 type OTP struct {
 	Project string `env:"PROJECT"`
-	Account string `env:"ACCOUNT"`
 }
 
 type TLS struct {
@@ -61,7 +59,6 @@ func GetServerConfig() (ServerConfig, error) {
 			AccessTokenExpiresIn:      AccessTokenExpiresInDefault,
 		},
 		OTP: OTP{
-			Account: AccountDefault,
 			Project: ProjectDefault,
 		},
 		TLS: TLS{
