@@ -2,7 +2,9 @@ package storage
 
 import (
 	"context"
+	"errors"
 	"fmt"
+	log "github.com/sirupsen/logrus"
 
 	"github.com/glebarez/sqlite"
 	"gorm.io/gorm"
@@ -17,7 +19,12 @@ type sqLite struct {
 
 func NewSqLiteDB(dbPath string) (*sqLite, error) {
 	db := &sqLite{}
-	conn, err := gorm.Open(sqlite.Open(dbPath), &gorm.Config{Logger: logger.Default.LogMode(logger.Error)})
+	conn, err := gorm.Open(
+		sqlite.Open(dbPath),
+		&gorm.Config{
+			TranslateError: true,
+			Logger:         logger.Default.LogMode(logger.Info)},
+	)
 	if err != nil {
 		return nil, err
 	}
@@ -35,15 +42,16 @@ func (db *sqLite) migrate() error {
 	)
 }
 
-func (db *sqLite) AddCredential(ctx context.Context, cred model.Credential) error {
-	result := db.conn.WithContext(ctx).Create(&cred)
+func (db *sqLite) AddCredential(ctx context.Context, cred *model.Credential) error {
+	result := db.conn.WithContext(ctx).Create(cred)
 	if result.Error != nil {
 		return fmt.Errorf("%w: %v", ErrDB, result.Error)
 	}
 	return nil
 }
 
-func (db *sqLite) UpdateCredential(ctx context.Context, cred model.Credential) (model.Credential, error) {
+func (db *sqLite) SaveCredential(ctx context.Context, cred model.Credential) (model.Credential, error) {
+	log.Info("saving cred: ", cred.ID)
 	result := db.conn.WithContext(ctx).Save(&cred)
 	if result.Error != nil {
 		return cred, fmt.Errorf("%w: %v", ErrDB, result.Error)
@@ -85,4 +93,24 @@ func (db *sqLite) SearchCredentials(ctx context.Context, search string) ([]*mode
 		return nil, fmt.Errorf("%w: %v", ErrDB, result.Error)
 	}
 	return creds, nil
+}
+
+func (db *sqLite) GetAnyCredential(ctx context.Context) (model.Credential, error) {
+	cred := model.Credential{}
+	result := db.conn.WithContext(ctx).First(&cred)
+	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+		return cred, fmt.Errorf("%w: %v", ErrNotFound, result.Error)
+	}
+	if result.Error != nil {
+		return cred, fmt.Errorf("%w: %v", ErrDB, result.Error)
+	}
+	return cred, nil
+}
+
+func (db *sqLite) DeleteAll(ctx context.Context) error {
+	result := db.conn.WithContext(ctx).Exec("DELETE FROM credentials")
+	if result.Error != nil {
+		return fmt.Errorf("%w: %v", ErrDB, result.Error)
+	}
+	return nil
 }

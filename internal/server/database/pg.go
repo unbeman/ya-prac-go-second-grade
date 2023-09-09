@@ -99,7 +99,12 @@ func (db *pg) DeleteUserSecrets(ctx context.Context, user model.User) error {
 }
 
 func (db *pg) connect(dsn string) error {
-	conn, err := gorm.Open(postgres.Open(dsn), &gorm.Config{Logger: logger.Default.LogMode(logger.Error)})
+	conn, err := gorm.Open(
+		postgres.Open(dsn),
+		&gorm.Config{
+			TranslateError: true,
+			Logger:         logger.Default.LogMode(logger.Info)},
+	)
 	if err != nil {
 		return err
 	}

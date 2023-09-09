@@ -89,6 +89,10 @@ func (e exec) login(args []string) {
 	}
 
 	err := e.app.Auth.Login(args[1], args[2])
+	if errors.Is(err, service.ErrVault) {
+		fmt.Println("the vault is not yours")
+		return
+	}
 	if errors.Is(err, service.ErrEnforceValidateOTP) {
 		fmt.Println("please validate 2fa code")
 		return

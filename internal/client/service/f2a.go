@@ -88,7 +88,7 @@ func (s *OTPService) Disable(login, password string) error {
 	}
 
 	//todo: send hashed input key for comparing on the server side instead
-	if string(inputKey) != string(s.auth.GetMaterKey()) {
+	if string(inputKey) != string(s.auth.GetMasterKey()) {
 		return fmt.Errorf("invalid login or master password")
 	}
 

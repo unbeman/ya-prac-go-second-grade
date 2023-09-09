@@ -11,11 +11,15 @@ import (
 var ErrDB = errors.New("database error")
 var ErrNotFound = errors.New("not found")
 
+//todo: split for services
+
 type IStorage interface {
-	AddCredential(ctx context.Context, cred model.Credential) error
-	UpdateCredential(ctx context.Context, cred model.Credential) (model.Credential, error)
+	AddCredential(ctx context.Context, cred *model.Credential) error
+	SaveCredential(ctx context.Context, cred model.Credential) (model.Credential, error)
 	DeleteCredential(ctx context.Context, cred model.Credential) error
+	DeleteAll(ctx context.Context) error
 	GetCredential(ctx context.Context, cred model.Credential) (model.Credential, error)
+	GetAnyCredential(ctx context.Context) (model.Credential, error)
 	GetAllCredentials(ctx context.Context) ([]*model.Credential, error)
 	SearchCredentials(ctx context.Context, search string) ([]*model.Credential, error)
 }

@@ -113,8 +113,8 @@ func (s *SyncService) LoadFromServer() {
 		log.Error(err)
 		return
 	}
-
-	for _, serverCred := range out.Credentials {
+	log.Infof("got (%d) secrets from server", len(out.Credentials))
+	for _, serverCred := range out.GetCredentials() {
 		uuID, err := uuid.FromString(serverCred.GetLocalId())
 		if err != nil {
 			log.Error("LoadFromServer: ", err)
@@ -135,7 +135,7 @@ func (s *SyncService) LoadFromServer() {
 			cred.DeletedAt = &t
 		}
 
-		_, err = s.vault.UpdateCredential(ctx, cred)
+		_, err = s.vault.SaveCredential(ctx, cred)
 		if err != nil {
 			log.Error("LoadFromServer: ", err)
 			return
@@ -155,9 +155,9 @@ func (s *SyncService) LoadFromServer() {
 //todo: replace to controller layer
 
 func (s *SyncService) CreateCred(cType model.CredentialType, metadata, sensitiveData string) error {
-	key := s.auth.GetMaterKey()
+	key := s.auth.GetMasterKey()
 
-	cred := model.Credential{}
+	cred := &model.Credential{}
 	cred.Type = cType
 	cred.MetaData = metadata
 
@@ -171,13 +171,13 @@ func (s *SyncService) CreateCred(cType model.CredentialType, metadata, sensitive
 		return fmt.Errorf("%w: %s", ErrInternal, err)
 	}
 
-	s.memStorage.UpsertCredential(cred)
+	s.memStorage.UpsertCredential(*cred)
 
 	return nil
 }
 
 func (s *SyncService) EditCred(cred model.Credential, metadata, sensitiveData string) error {
-	key := s.auth.GetMaterKey()
+	key := s.auth.GetMasterKey()
 
 	cred.MetaData = metadata
 
@@ -189,7 +189,7 @@ func (s *SyncService) EditCred(cred model.Credential, metadata, sensitiveData st
 
 	cred.Encrypted = encryptedData
 
-	cred, err = s.vault.UpdateCredential(context.TODO(), cred)
+	cred, err = s.vault.SaveCredential(context.TODO(), cred)
 	if err != nil {
 		return fmt.Errorf("%w: %s", ErrInternal, err)
 	}
@@ -226,7 +226,7 @@ func (s *SyncService) GetCredByID(credID uuid.UUID) (model.Credential, error) {
 	}
 
 	if cred.Decrypted == nil {
-		data, err := utils.Decrypt(s.auth.GetMaterKey(), cred.Encrypted)
+		data, err := utils.Decrypt(s.auth.GetMasterKey(), cred.Encrypted)
 		if err != nil {
 			return cred, fmt.Errorf("%w: %s", ErrInternal, err)
 		}

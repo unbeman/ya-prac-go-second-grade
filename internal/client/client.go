@@ -52,7 +52,7 @@ func GetClientApp(cfg config.AppConfig) (*ClientApp, error) {
 		return nil, fmt.Errorf("could not create gRPC connection: %w", err)
 	}
 
-	auth := service.NewAuthService(authConn)
+	auth := service.NewAuthService(authConn, vault)
 	authInterceptor := interceptor.NewAuthInterceptor(auth, protectedWithAuthMethods)
 
 	protectedConn, err := grpc.Dial(

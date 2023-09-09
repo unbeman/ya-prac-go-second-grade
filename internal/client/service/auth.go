@@ -11,11 +11,13 @@ import (
 	"google.golang.org/grpc/status"
 
 	pb "github.com/unbeman/ya-prac-go-second-grade/api/v1"
+	"github.com/unbeman/ya-prac-go-second-grade/internal/client/storage"
 	"github.com/unbeman/ya-prac-go-second-grade/internal/client/utils"
 )
 
 var (
 	ErrInternal           = errors.New("internal error")
+	ErrVault              = errors.New("can't decrypt vault")
 	ErrLoginAlreadyExist  = errors.New("login already exists")
 	ErrEnforceValidateOTP = errors.New("2Fa enabled; please, validate code")
 )
@@ -24,14 +26,15 @@ type AuthService struct {
 	client      pb.AuthServiceClient
 	masterKey   []byte
 	accessToken string
+	vault       storage.IStorage
 }
 
-func NewAuthService(conn grpc.ClientConnInterface) *AuthService {
+func NewAuthService(conn grpc.ClientConnInterface, vault storage.IStorage) *AuthService {
 	client := pb.NewAuthServiceClient(conn)
-	return &AuthService{client: client}
+	return &AuthService{client: client, vault: vault}
 }
 
-func (s *AuthService) GetMaterKey() []byte {
+func (s *AuthService) GetMasterKey() []byte {
 	return s.masterKey
 }
 
@@ -69,6 +72,13 @@ func (s *AuthService) Register(login, masterPassword string) error {
 		KeyHash: base64.StdEncoding.EncodeToString(masterKeyHash),
 	}
 
+	err = s.vault.DeleteAll(ctx)
+	if err != nil {
+		err = fmt.Errorf("%w : %s", ErrInternal, err)
+		log.Error(err)
+		return err
+	}
+
 	out, err := s.client.Register(ctx, &input)
 	if err != nil {
 		if e, ok := status.FromError(err); ok {
@@ -80,16 +90,24 @@ func (s *AuthService) Register(login, masterPassword string) error {
 		return err
 	}
 
-	s.setMasterKey(s.masterKey)
+	s.setMasterKey(masterKey)
 	s.SetAccessToken(out.GetAccessToken())
 
 	return nil
 }
 
+//todo: мб разбить аутентификацию на сервере и офлайн вход на клиенте
+
 func (s *AuthService) Login(login, masterPassword string) error {
 	masterKey, err := utils.GetMasterKey(masterPassword, login)
 	if err != nil {
 		err = fmt.Errorf("%w : %s", ErrInternal, err)
+		log.Error(err)
+		return err
+	}
+
+	err = s.checkVault(masterKey)
+	if err != nil {
 		log.Error(err)
 		return err
 	}
@@ -125,5 +143,24 @@ func (s *AuthService) Login(login, masterPassword string) error {
 		return ErrEnforceValidateOTP
 	}
 
+	return nil
+}
+
+func (s *AuthService) checkVault(masterKey []byte) error {
+	ctx := context.TODO()
+	cred, err := s.vault.GetAnyCredential(ctx)
+
+	// no secrets in vault, may login
+	if errors.Is(err, storage.ErrNotFound) {
+		return nil
+	}
+	if err != nil {
+		return fmt.Errorf("%w : %v", ErrInternal, err)
+	}
+
+	_, err = utils.Decrypt(masterKey, cred.Encrypted)
+	if err != nil {
+		return fmt.Errorf("%w : %v", ErrVault, err)
+	}
 	return nil
 }
