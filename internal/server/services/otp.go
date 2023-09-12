@@ -5,7 +5,6 @@ import (
 	"fmt"
 
 	"github.com/pquerna/otp/totp"
-	log "github.com/sirupsen/logrus"
 
 	pb "github.com/unbeman/ya-prac-go-second-grade/api/v1"
 	"github.com/unbeman/ya-prac-go-second-grade/internal/server/config"
@@ -37,7 +36,7 @@ func (s OTP) OTPGenerate(ctx context.Context, input *pb.OTPGenRequest) (*pb.OTPG
 	if err != nil {
 		return nil, GenStatusError(err)
 	}
-	log.Info("OTPGenerate", user)
+
 	otpInfo, err := s.generate(ctx, user)
 	if err != nil {
 		return nil, GenStatusError(err)
@@ -54,7 +53,7 @@ func (s OTP) OTPVerify(ctx context.Context, input *pb.OTPVerifyRequest) (*pb.OTP
 	if err != nil {
 		return nil, GenStatusError(err)
 	}
-	log.Info("OTPVerify", user.Login, user.OtpVerified, *user.OtpEnabled)
+
 	_, err = s.verify(ctx, input.Token, user)
 	if err != nil {
 		return nil, GenStatusError(err)

@@ -15,3 +15,9 @@ func BuildTestTLSConfig(cert, key string) TLS {
 		KeyPath:  key,
 	}
 }
+
+func BuildTestOTPConfig() OTP {
+	return OTP{
+		Project: "test",
+	}
+}

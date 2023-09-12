@@ -4,6 +4,9 @@ BINARY_PATH=bin
 proto:
 	protoc --go_out=api/v1 --go_opt=paths=source_relative --proto_path=api/v1 --go-grpc_out=api/v1 --go-grpc_opt=paths=source_relative api/v1/*.proto
 
+mocks:
+	mockgen -destination=internal/server/database/mock/database_mock.go "github.com/unbeman/ya-prac-go-second-grade/internal/server/database" Database
+	mockgen -destination=internal/server/utils/mock/jwt_mock.go "github.com/unbeman/ya-prac-go-second-grade/internal/server/utils" IJWT
 
 server:
 	go run cmd/server/main.go -port 8080

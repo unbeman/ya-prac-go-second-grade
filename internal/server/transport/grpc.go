@@ -34,7 +34,7 @@ func NewGRPCServer(cfg config.ServerConfig,
 		return nil, err
 	}
 
-	noAuthMethods := map[string]bool{
+	noAuthRequiredMethods := map[string]bool{
 		pb.AuthService_Login_FullMethodName:    true,
 		pb.AuthService_Register_FullMethodName: true,
 	}
@@ -45,7 +45,7 @@ func NewGRPCServer(cfg config.ServerConfig,
 		pb.OtpService_OTPDisable_FullMethodName:  true,
 	}
 
-	ai := NewAuthInterceptor(auth, noAuthMethods, otpMethods)
+	ai := NewAuthInterceptor(auth, noAuthRequiredMethods, otpMethods)
 
 	server := grpc.NewServer(
 		grpc.Creds(creds),
