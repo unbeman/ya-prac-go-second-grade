@@ -8,3 +8,10 @@ func BuildTestJWTConfig(keyFile string, expDur time.Duration) JWT {
 		AccessTokenExpiresIn:      expDur,
 	}
 }
+
+func BuildTestTLSConfig(cert, key string) TLS {
+	return TLS{
+		CertPath: cert,
+		KeyPath:  key,
+	}
+}
