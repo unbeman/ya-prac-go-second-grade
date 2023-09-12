@@ -13,6 +13,11 @@ import (
 	"github.com/unbeman/ya-prac-go-second-grade/internal/server/model"
 )
 
+type IJWT interface {
+	Generate(user model.User, shouldF2A bool) (string, error)
+	Verify(accessToken string) (*UserClaims, error)
+}
+
 type UserClaims struct {
 	jwt.StandardClaims
 	UserID     uuid.UUID `json:"user_id"`
@@ -31,10 +36,6 @@ func NewJWTManager(cfg config.JWT) (*JWTManager, error) {
 	}
 
 	privateKey, err := jwt.ParseRSAPrivateKeyFromPEM(rawPrivateKey)
-	if err != nil {
-		return nil, fmt.Errorf("could not parse key: %w", err)
-	}
-
 	if err != nil {
 		return nil, fmt.Errorf("could not parse key: %w", err)
 	}
