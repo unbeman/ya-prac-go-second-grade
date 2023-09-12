@@ -18,12 +18,12 @@ import (
 type OTP struct {
 	pb.UnimplementedOtpServiceServer
 	db         database.Database
-	jwtManager *utils.JWTManager
+	jwtManager utils.IJWT
 	project    string
 }
 
 // NewOTPService setups new OTP instance.
-func NewOTPService(cfg config.OTP, db database.Database, jwtManager *utils.JWTManager) *OTP {
+func NewOTPService(cfg config.OTP, db database.Database, jwtManager utils.IJWT) *OTP {
 	return &OTP{
 		db:         db,
 		project:    cfg.Project,

@@ -17,11 +17,11 @@ import (
 type Auth struct {
 	pb.UnimplementedAuthServiceServer
 	db         database.Database
-	JwtManager *utils.JWTManager
+	JwtManager utils.IJWT
 }
 
 // NewAuthService setups new Auth instance.
-func NewAuthService(db database.Database, jwtManager *utils.JWTManager) *Auth {
+func NewAuthService(db database.Database, jwtManager utils.IJWT) *Auth {
 	return &Auth{db: db, JwtManager: jwtManager}
 }
 
