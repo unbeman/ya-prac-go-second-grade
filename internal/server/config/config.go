@@ -26,7 +26,6 @@ type PG struct {
 type JWT struct {
 	AccessTokenPrivateKeyFile string        `env:"ACCESS_TOKEN_PRIVATE_KEY_FILE"`
 	AccessTokenExpiresIn      time.Duration `env:"ACCESS_TOKEN_EXPIRED_IN"`
-	//AccessTokenMaxAge     int           `env:"ACCESS_TOKEN_MAXAGE"`
 }
 
 type OTP struct {

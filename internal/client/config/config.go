@@ -14,8 +14,8 @@ var (
 )
 
 type TLSConfig struct {
-	ClientCertPath       string //todo: env
-	ClientPrivateKeyPath string
+	ClientCertPath       string `env:"TLS_CERT_PATH"`
+	ClientPrivateKeyPath string `env:"TLS_KEY_PATH"`
 }
 
 type AppConfig struct {
