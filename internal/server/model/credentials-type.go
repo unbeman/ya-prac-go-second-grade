@@ -6,8 +6,8 @@ type CredentialType string
 
 const (
 	Login CredentialType = "login"
-	Bank                 = "bank"
-	Note                 = "note"
+	Bank  CredentialType = "bank"
+	Note  CredentialType = "note"
 )
 
 func (st *CredentialType) Scan(value interface{}) error {

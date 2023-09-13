@@ -16,19 +16,8 @@ import (
 	"github.com/unbeman/ya-prac-go-second-grade/internal/server/model"
 	"github.com/unbeman/ya-prac-go-second-grade/internal/server/utils"
 	mock_utils "github.com/unbeman/ya-prac-go-second-grade/internal/server/utils/mock"
+	"github.com/unbeman/ya-prac-go-second-grade/internal/test_helpers"
 )
-
-func setupDB(t *testing.T, ctrl *gomock.Controller, buildStubs func(db *mock_database.MockDatabase)) *mock_database.MockDatabase {
-	database := mock_database.NewMockDatabase(ctrl)
-	buildStubs(database)
-	return database
-}
-
-func setupJWTManager(t *testing.T, ctrl *gomock.Controller, stub func(j *mock_utils.MockIJWT)) utils.IJWT {
-	jwt := mock_utils.NewMockIJWT(ctrl)
-	stub(jwt)
-	return jwt
-}
 
 func TestAuth_Register(t *testing.T) {
 	user := model.User{Login: "test", MasterKey2Hash: "hashed key-hash"}
@@ -177,8 +166,8 @@ func TestAuth_Register(t *testing.T) {
 			ctrl := gomock.NewController(t)
 			defer ctrl.Finish()
 
-			jwt := setupJWTManager(t, ctrl, tt.jwtGen)
-			db := setupDB(t, ctrl, tt.buildStubs)
+			jwt := test_helpers.SetupMockJWTManager(t, ctrl, tt.jwtGen)
+			db := test_helpers.SetupMockDB(t, ctrl, tt.buildStubs)
 
 			auth := NewAuthService(db, jwt)
 
@@ -369,8 +358,8 @@ func TestAuth_Login(t *testing.T) {
 			ctrl := gomock.NewController(t)
 			defer ctrl.Finish()
 
-			jwt := setupJWTManager(t, ctrl, tt.jwtGen)
-			db := setupDB(t, ctrl, tt.buildStubs)
+			jwt := test_helpers.SetupMockJWTManager(t, ctrl, tt.jwtGen)
+			db := test_helpers.SetupMockDB(t, ctrl, tt.buildStubs)
 
 			auth := NewAuthService(db, jwt)
 
@@ -384,6 +373,70 @@ func TestAuth_Login(t *testing.T) {
 				assert.Equal(t, tt.out.AccessToken, got.AccessToken)
 				assert.Equal(t, tt.out.Enforce_2FA, got.Enforce_2FA)
 			}
+		})
+	}
+}
+
+func TestAuth_GetUserByID(t *testing.T) {
+	userId := uuid.NewV4()
+	tests := []struct {
+		name       string
+		wantErr    bool
+		userID     uuid.UUID
+		buildStubs func(db *mock_database.MockDatabase)
+	}{
+		{
+			name:    "good",
+			wantErr: false,
+			userID:  userId,
+			buildStubs: func(db *mock_database.MockDatabase) {
+				db.EXPECT().
+					GetUserByID(gomock.Any(), gomock.Any()).
+					Return(model.User{Base: model.Base{ID: userId}}, nil).
+					Times(1)
+			},
+		},
+		{
+			name:    "not found",
+			wantErr: true,
+			userID:  userId,
+			buildStubs: func(db *mock_database.MockDatabase) {
+				db.EXPECT().
+					GetUserByID(gomock.Any(), gomock.Any()).
+					Return(model.User{}, database.ErrUserNotFound).
+					Times(1)
+			},
+		},
+		{
+			name:    "db err",
+			wantErr: true,
+			userID:  userId,
+			buildStubs: func(db *mock_database.MockDatabase) {
+				db.EXPECT().
+					GetUserByID(gomock.Any(), gomock.Any()).
+					Return(model.User{}, database.ErrDatabase).
+					Times(1)
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			ctx := context.Background()
+
+			ctrl := gomock.NewController(t)
+			defer ctrl.Finish()
+
+			db := test_helpers.SetupMockDB(t, ctrl, tt.buildStubs)
+			jwt := mock_utils.NewMockIJWT(ctrl)
+
+			auth := NewAuthService(db, jwt)
+
+			_, err := auth.GetUserByID(ctx, tt.userID)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("GetUserByID() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+
 		})
 	}
 }

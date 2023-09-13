@@ -16,6 +16,7 @@ import (
 	mock_database "github.com/unbeman/ya-prac-go-second-grade/internal/server/database/mock"
 	"github.com/unbeman/ya-prac-go-second-grade/internal/server/model"
 	mock_utils "github.com/unbeman/ya-prac-go-second-grade/internal/server/utils/mock"
+	"github.com/unbeman/ya-prac-go-second-grade/internal/test_helpers"
 )
 
 func setUserToContext(ctx context.Context, user model.User) context.Context {
@@ -67,7 +68,7 @@ func TestOTP_OTPGenerate(t *testing.T) {
 			defer ctrl.Finish()
 
 			jwt := mock_utils.NewMockIJWT(ctrl)
-			db := setupDB(t, ctrl, tt.buildStubs)
+			db := test_helpers.SetupMockDB(t, ctrl, tt.buildStubs)
 
 			s := NewOTPService(config.BuildTestOTPConfig(), db, jwt)
 
@@ -189,8 +190,8 @@ func TestOTP_OTPVerify(t *testing.T) {
 			ctrl := gomock.NewController(t)
 			defer ctrl.Finish()
 
-			jwt := setupJWTManager(t, ctrl, tt.jwtVer)
-			db := setupDB(t, ctrl, tt.buildStubs)
+			jwt := test_helpers.SetupMockJWTManager(t, ctrl, tt.jwtVer)
+			db := test_helpers.SetupMockDB(t, ctrl, tt.buildStubs)
 
 			s := NewOTPService(config.BuildTestOTPConfig(), db, jwt)
 
@@ -280,7 +281,7 @@ func TestOTP_OTPValidate(t *testing.T) {
 			ctrl := gomock.NewController(t)
 			defer ctrl.Finish()
 
-			jwt := setupJWTManager(t, ctrl, tt.jwtVer)
+			jwt := test_helpers.SetupMockJWTManager(t, ctrl, tt.jwtVer)
 			db := mock_database.NewMockDatabase(ctrl)
 
 			s := NewOTPService(config.BuildTestOTPConfig(), db, jwt)
@@ -355,7 +356,7 @@ func TestOTP_OTPDisable(t *testing.T) {
 			defer ctrl.Finish()
 
 			jwt := mock_utils.NewMockIJWT(ctrl)
-			db := setupDB(t, ctrl, tt.buildStubs)
+			db := test_helpers.SetupMockDB(t, ctrl, tt.buildStubs)
 
 			s := NewOTPService(config.BuildTestOTPConfig(), db, jwt)
 

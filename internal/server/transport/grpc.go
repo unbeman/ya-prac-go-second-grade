@@ -50,7 +50,6 @@ func NewGRPCServer(cfg config.ServerConfig,
 	server := grpc.NewServer(
 		grpc.Creds(creds),
 		grpc.UnaryInterceptor(ai.Unary()),
-		grpc.StreamInterceptor(ai.Stream()),
 	)
 
 	return &GRPCServer{

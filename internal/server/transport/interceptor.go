@@ -53,30 +53,6 @@ func (i *AuthInterceptor) Unary() grpc.UnaryServerInterceptor {
 	}
 }
 
-// Stream returns a server interceptor function to authenticate and authorize stream RPC.
-func (i *AuthInterceptor) Stream() grpc.StreamServerInterceptor {
-	return func(
-		srv interface{},
-		stream grpc.ServerStream,
-		info *grpc.StreamServerInfo,
-		handler grpc.StreamHandler,
-	) error {
-
-		if _, ok := i.noAuthMethods[info.FullMethod]; !ok {
-			user, err := i.authorize(stream.Context(), info.FullMethod)
-			if err != nil {
-				return err
-			}
-
-			newCtx := context.WithValue(stream.Context(), "auth-user", user)
-
-			stream = newServerStreamWrapper(stream, newCtx)
-		}
-
-		return handler(srv, stream)
-	}
-}
-
 // authorize checks user by provided in metadata access token,
 // prohibits method if user have enabled 2fa, but he didn't verify token.
 func (i *AuthInterceptor) authorize(ctx context.Context, method string) (model.User, error) {
