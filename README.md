@@ -1,5 +1,5 @@
 # ya-prac-go-second-grade
-![Coverage](https://img.shields.io/badge/Coverage-80.7%25-brightgreen)
+![Coverage](https://img.shields.io/badge/Coverage-81.5%25-brightgreen)
 
 ## Менеджер паролей
 
