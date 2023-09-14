@@ -15,6 +15,7 @@ type User struct {
 	Credentials []Credential
 }
 
+// OTPOutput describes credentials to configure 2FA authorization.
 type OTPOutput struct {
 	SecretKey string `json:"secret_key"`
 	AuthURL   string `json:"auth_url"`
