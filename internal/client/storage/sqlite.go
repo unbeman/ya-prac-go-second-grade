@@ -21,7 +21,7 @@ func NewSqLiteDB(dbPath string) (*sqLite, error) {
 		sqlite.Open(dbPath),
 		&gorm.Config{
 			TranslateError: true,
-			Logger:         logger.Default.LogMode(logger.Info)},
+			Logger:         logger.Default.LogMode(logger.Silent)},
 	)
 	if err != nil {
 		return nil, err
