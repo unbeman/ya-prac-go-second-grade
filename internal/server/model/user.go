@@ -14,3 +14,8 @@ type User struct {
 
 	Credentials []Credential
 }
+
+type OTPOutput struct {
+	SecretKey string `json:"secret_key"`
+	AuthURL   string `json:"auth_url"`
+}
