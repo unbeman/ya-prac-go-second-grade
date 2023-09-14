@@ -1,0 +1,42 @@
+syntax = "proto3";
+
+package pass_keeper;
+
+option go_package = "github.com/unbeman/ya-prac-go-second-grade/api/v1";
+
+message OTPGenRequest{}
+
+message OTPGenResponse{
+  string secret_key = 1;
+  string auth_url = 2;
+}
+
+message OTPVerifyRequest{
+  string token = 1;
+}
+
+message OTPVerifyResponse{
+  string access_token = 1;
+}
+
+message OTPValidateRequest{
+  string token = 1;
+}
+
+message OTPValidateResponse{
+  string access_token = 1;
+}
+
+message OTPDisableRequest{
+  string password_hash = 1;
+}
+
+message OTPDisableResponse{
+}
+
+service OtpService {
+  rpc OTPGenerate(OTPGenRequest) returns (OTPGenResponse);
+  rpc OTPVerify(OTPVerifyRequest) returns (OTPVerifyResponse);
+  rpc OTPValidate(OTPValidateRequest) returns (OTPValidateResponse);
+  rpc OTPDisable(OTPDisableRequest) returns (OTPDisableResponse);
+}
