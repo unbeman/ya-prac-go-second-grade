@@ -1,7 +1,11 @@
 package model
 
-import "database/sql/driver"
+import (
+	"database/sql/driver"
+	"fmt"
+)
 
+// CredentialType is type of credential.
 type CredentialType string
 
 const (
@@ -11,7 +15,11 @@ const (
 )
 
 func (st *CredentialType) Scan(value interface{}) error {
-	*st = CredentialType(value.(string))
+	v, ok := value.(string)
+	if !ok {
+		return fmt.Errorf("CredentialType.Scan: failed to convert value")
+	}
+	*st = CredentialType(v)
 	return nil
 }
 

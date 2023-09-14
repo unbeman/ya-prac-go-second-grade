@@ -2,6 +2,7 @@ package config
 
 import "time"
 
+// BuildTestJWTConfig setup jwt config for tests.
 func BuildTestJWTConfig(keyFile string, expDur time.Duration) JWT {
 	return JWT{
 		AccessTokenPrivateKeyFile: keyFile,
@@ -9,6 +10,7 @@ func BuildTestJWTConfig(keyFile string, expDur time.Duration) JWT {
 	}
 }
 
+// BuildTestTLSConfig setup tls config for tests.
 func BuildTestTLSConfig(cert, key string) TLS {
 	return TLS{
 		CertPath: cert,
@@ -16,6 +18,7 @@ func BuildTestTLSConfig(cert, key string) TLS {
 	}
 }
 
+// BuildTestOTPConfig setup otp config for tests.
 func BuildTestOTPConfig() OTP {
 	return OTP{
 		Project: "test",

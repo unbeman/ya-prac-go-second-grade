@@ -1,5 +1,6 @@
 package model
 
+// User describes user entity for db users table
 type User struct {
 	Base
 
@@ -12,19 +13,4 @@ type User struct {
 	OtpAuthUrl  string
 
 	Credentials []Credential
-}
-
-type UserInput struct {
-	Login        string `json:"login"`
-	PasswordHash string `json:"password_hash"`
-}
-
-type OTPInput struct {
-	UserId string `json:"user_id"`
-	Token  string `json:"token"`
-}
-
-type OTPOutput struct {
-	SecretKey string `json:"secret_key"`
-	AuthURL   string `json:"auth_url"`
 }

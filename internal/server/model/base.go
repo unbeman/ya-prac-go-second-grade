@@ -7,6 +7,7 @@ import (
 	"gorm.io/gorm"
 )
 
+// Base describes main columns for db tables.
 type Base struct {
 	ID        uuid.UUID `gorm:"type:uuid;primary_key;"`
 	CreatedAt time.Time

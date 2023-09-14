@@ -18,6 +18,7 @@ type pg struct {
 	conn *gorm.DB
 }
 
+// NewPG returns the initialized pg object that implements Database interface.
 func NewPG(cfg config.PG) (*pg, error) {
 	db := &pg{}
 	if err := db.connect(cfg.DSN); err != nil {
@@ -29,6 +30,7 @@ func NewPG(cfg config.PG) (*pg, error) {
 	return db, nil
 }
 
+// CreateUser inserts new given model.User if user.Login not occupied.
 func (db *pg) CreateUser(ctx context.Context, user model.User) (model.User, error) {
 	result := db.conn.WithContext(ctx).Create(&user)
 	if errors.Is(result.Error, gorm.ErrDuplicatedKey) {
@@ -40,6 +42,7 @@ func (db *pg) CreateUser(ctx context.Context, user model.User) (model.User, erro
 	return user, nil
 }
 
+// GetUserByLogin returns model.User with given login, if exists.
 func (db *pg) GetUserByLogin(ctx context.Context, login string) (model.User, error) {
 	user := model.User{}
 	result := db.conn.WithContext(ctx).First(&user, "login = ?", login)
@@ -52,6 +55,7 @@ func (db *pg) GetUserByLogin(ctx context.Context, login string) (model.User, err
 	return user, nil
 }
 
+// GetUserByID returns model.User with given user ID, if exists.
 func (db *pg) GetUserByID(ctx context.Context, userID uuid.UUID) (model.User, error) {
 	user := model.User{}
 	result := db.conn.WithContext(ctx).First(&user, userID)
@@ -64,6 +68,7 @@ func (db *pg) GetUserByID(ctx context.Context, userID uuid.UUID) (model.User, er
 	return user, nil
 }
 
+// UpdateUser updates existed user.
 func (db *pg) UpdateUser(ctx context.Context, user model.User) (model.User, error) {
 	result := db.conn.WithContext(ctx).Model(&user).Updates(user)
 	if result.Error != nil {
@@ -72,6 +77,7 @@ func (db *pg) UpdateUser(ctx context.Context, user model.User) (model.User, erro
 	return user, nil
 }
 
+// GetUserSecrets returns all user's credentials.
 func (db *pg) GetUserSecrets(ctx context.Context, user model.User) ([]model.Credential, error) {
 	var creds []model.Credential
 	result := db.conn.WithContext(ctx).Find(&creds, "user_id = ?", user.ID)
@@ -81,6 +87,7 @@ func (db *pg) GetUserSecrets(ctx context.Context, user model.User) ([]model.Cred
 	return creds, nil
 }
 
+// SaveUserSecrets upsert all user's credentials.
 func (db *pg) SaveUserSecrets(ctx context.Context, user model.User) error {
 	result := db.conn.WithContext(ctx).Save(&user)
 	if result.Error != nil {
@@ -89,6 +96,7 @@ func (db *pg) SaveUserSecrets(ctx context.Context, user model.User) error {
 	return nil
 }
 
+// DeleteUserSecrets delete all credentials for given user.
 func (db *pg) DeleteUserSecrets(ctx context.Context, user model.User) error {
 	result := db.conn.WithContext(ctx).Delete(&model.Credential{}, "user_id = ?", user.ID)
 	if result.Error != nil {
@@ -97,6 +105,7 @@ func (db *pg) DeleteUserSecrets(ctx context.Context, user model.User) error {
 	return nil
 }
 
+// connect initialize database session connection instance with dsn.
 func (db *pg) connect(dsn string) error {
 	conn, err := gorm.Open(
 		postgres.Open(dsn),
@@ -111,6 +120,7 @@ func (db *pg) connect(dsn string) error {
 	return nil
 }
 
+// migrate prepares database.
 func (db *pg) migrate() error {
 	tx := db.conn.Exec(fmt.Sprintf(`
 	DO $$ BEGIN

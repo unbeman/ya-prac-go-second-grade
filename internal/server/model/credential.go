@@ -2,6 +2,7 @@ package model
 
 import uuid "github.com/satori/go.uuid"
 
+// Credential describes entity for db credentials table.
 type Credential struct {
 	Base
 

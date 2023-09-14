@@ -24,7 +24,6 @@ type GRPCServer struct {
 }
 
 // NewGRPCServer setup server with given services and config settings.
-// todo: принимать список сервисов
 func NewGRPCServer(cfg config.ServerConfig,
 	auth *services.Auth,
 	otp *services.OTP,
@@ -65,6 +64,7 @@ func (g *GRPCServer) GetAddress() string {
 	return g.address
 }
 
+// Run starts gRPC server.
 func (g *GRPCServer) Run() error {
 	listen, err := net.Listen("tcp", g.address)
 	if err != nil {
@@ -79,6 +79,7 @@ func (g *GRPCServer) Run() error {
 	return g.server.Serve(listen)
 }
 
+// Close stops gRPC server.
 func (g *GRPCServer) Close() {
 	g.server.GracefulStop()
 }

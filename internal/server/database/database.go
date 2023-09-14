@@ -9,6 +9,7 @@ import (
 	"github.com/unbeman/ya-prac-go-second-grade/internal/server/model"
 )
 
+// Database describes the storage usage.
 type Database interface {
 	CreateUser(ctx context.Context, user model.User) (model.User, error)
 	GetUserByLogin(ctx context.Context, login string) (model.User, error)
@@ -20,6 +21,7 @@ type Database interface {
 	DeleteUserSecrets(ctx context.Context, user model.User) error
 }
 
+// GetDatabase returns Database implementation.
 func GetDatabase(cfg config.PG) (Database, error) {
 	return NewPG(cfg)
 }
