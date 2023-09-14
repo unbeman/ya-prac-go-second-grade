@@ -79,7 +79,6 @@ func (g *GRPCServer) Run() error {
 	return g.server.Serve(listen)
 }
 
-func (g *GRPCServer) Close() error {
+func (g *GRPCServer) Close() {
 	g.server.GracefulStop()
-	return nil
 }

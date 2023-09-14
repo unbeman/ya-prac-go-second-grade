@@ -9,8 +9,8 @@ import (
 var (
 	AddressDefault        = "0.0.0.0:8080"
 	DBPathDefault         = "local.db"
-	CertPathDefault       = "cert/RootCa.crt"
-	PrivateKeyPathDefault = "cert/RootCa.key"
+	CertPathDefault       = "cert/RootCA.crt"
+	PrivateKeyPathDefault = "cert/RootCA.key"
 )
 
 type TLSConfig struct {
@@ -19,7 +19,7 @@ type TLSConfig struct {
 }
 
 type AppConfig struct {
-	Address string `env:"SERVER_ADDRESS"`
+	Address string `env:"PK_SERVER_ADDRESS"`
 	DBFile  string `env:"SQLITE_PATH"`
 	Certs   TLSConfig
 }

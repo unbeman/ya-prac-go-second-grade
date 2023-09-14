@@ -28,6 +28,7 @@ type SyncService struct {
 	syncOnce   sync.Once
 	syncDur    time.Duration
 	stop       chan struct{}
+	waitStop   chan struct{}
 }
 
 func NewSyncService(conn grpc.ClientConnInterface, vault storage.IStorage, mem *storage.MemStore, auth *AuthService) *SyncService {
@@ -39,6 +40,7 @@ func NewSyncService(conn grpc.ClientConnInterface, vault storage.IStorage, mem *
 		syncDur:    SyncDurationDefault,
 		syncOnce:   sync.Once{},
 		stop:       make(chan struct{}),
+		waitStop:   make(chan struct{}),
 	}
 }
 
@@ -58,6 +60,7 @@ func (s *SyncService) StartSync() {
 			case <-s.stop:
 				s.SaveOnServer()
 				log.Info("sync stopped")
+				s.waitStop <- struct{}{}
 				return
 			}
 		}
@@ -66,6 +69,7 @@ func (s *SyncService) StartSync() {
 
 func (s *SyncService) StopSync() {
 	close(s.stop)
+	<-s.waitStop
 }
 
 // SaveOnServer uploads all user's secrets from local storage to server vault.
@@ -113,7 +117,6 @@ func (s *SyncService) LoadFromServer() {
 		log.Error(err)
 		return
 	}
-	log.Infof("got (%d) secrets from server", len(out.Credentials))
 	for _, serverCred := range out.GetCredentials() {
 		uuID, err := uuid.FromString(serverCred.GetLocalId())
 		if err != nil {

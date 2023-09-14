@@ -12,13 +12,11 @@ import (
 func main() {
 	cfg, err := config.GetClientConfig()
 	if err != nil {
-		log.Error(err)
-		return
+		log.Fatal(err)
 	}
 	app, err := client.GetClientApp(cfg)
 	if err != nil {
-		log.Error(err)
-		return
+		log.Fatal(err)
 	}
 
 	app.Run()

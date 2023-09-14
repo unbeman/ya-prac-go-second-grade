@@ -53,14 +53,14 @@ func (s *AuthService) SetAccessToken(token string) {
 func (s *AuthService) Register(login, masterPassword string) error {
 	masterKey, err := utils.GetMasterKey(masterPassword, login)
 	if err != nil {
-		err = fmt.Errorf("%w : %s", ErrInternal, err)
+		err = fmt.Errorf("%w : %s", ErrInternal, err.Error())
 		log.Error(err)
 		return err
 	}
 
 	masterKeyHash, err := utils.GetMasterKeyHash(masterKey, masterPassword)
 	if err != nil {
-		err = fmt.Errorf("%w : %s", ErrInternal, err)
+		err = fmt.Errorf("%w : %s", ErrInternal, err.Error())
 		log.Error(err)
 		return err
 	}
@@ -74,7 +74,7 @@ func (s *AuthService) Register(login, masterPassword string) error {
 
 	err = s.vault.DeleteAll(ctx)
 	if err != nil {
-		err = fmt.Errorf("%w : %s", ErrInternal, err)
+		err = fmt.Errorf("%w : %s", ErrInternal, err.Error())
 		log.Error(err)
 		return err
 	}
@@ -101,7 +101,7 @@ func (s *AuthService) Register(login, masterPassword string) error {
 func (s *AuthService) Login(login, masterPassword string) error {
 	masterKey, err := utils.GetMasterKey(masterPassword, login)
 	if err != nil {
-		err = fmt.Errorf("%w : %s", ErrInternal, err)
+		err = fmt.Errorf("%w : %s", ErrInternal, err.Error())
 		log.Error(err)
 		return err
 	}
@@ -114,7 +114,7 @@ func (s *AuthService) Login(login, masterPassword string) error {
 
 	masterKeyHash, err := utils.GetMasterKeyHash(masterKey, masterPassword)
 	if err != nil {
-		err = fmt.Errorf("%w : %s", ErrInternal, err)
+		err = fmt.Errorf("%w : %s", ErrInternal, err.Error())
 		log.Error(err)
 		return err
 	}

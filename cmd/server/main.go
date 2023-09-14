@@ -15,16 +15,14 @@ func main() {
 
 	cfg, err := config.GetServerConfig()
 	if err != nil {
-		log.Error(err)
-		return
+		log.Fatal(err)
 	}
 
 	//todo: setup logger
 
 	app, err := server.GetApp(cfg)
 	if err != nil {
-		log.Error(err)
-		return
+		log.Fatal(err)
 	}
 
 	// func waits signal to stop program

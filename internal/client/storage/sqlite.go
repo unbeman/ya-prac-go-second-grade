@@ -4,8 +4,6 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	log "github.com/sirupsen/logrus"
-
 	"github.com/glebarez/sqlite"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
@@ -51,7 +49,6 @@ func (db *sqLite) AddCredential(ctx context.Context, cred *model.Credential) err
 }
 
 func (db *sqLite) SaveCredential(ctx context.Context, cred model.Credential) (model.Credential, error) {
-	log.Info("saving cred: ", cred.ID)
 	result := db.conn.WithContext(ctx).Save(&cred)
 	if result.Error != nil {
 		return cred, fmt.Errorf("%w: %v", ErrDB, result.Error)

@@ -38,7 +38,7 @@ type TLS struct {
 }
 
 type ServerConfig struct {
-	Address  string
+	Address  string `env:"PK_SERVER_ADDRESS"`
 	Postgres PG
 	JWT      JWT
 	OTP      OTP
