@@ -91,19 +91,3 @@ func (i *AuthInterceptor) authorize(ctx context.Context, method string) (model.U
 
 	return user, nil
 }
-
-type serverStreamWrapper struct {
-	grpc.ServerStream
-	ctx context.Context
-}
-
-func newServerStreamWrapper(ss grpc.ServerStream, newCtx context.Context) *serverStreamWrapper {
-	return &serverStreamWrapper{
-		ServerStream: ss,
-		ctx:          newCtx,
-	}
-}
-
-func (w *serverStreamWrapper) Context() context.Context {
-	return w.ctx
-}

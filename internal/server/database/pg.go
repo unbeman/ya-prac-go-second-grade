@@ -15,8 +15,7 @@ import (
 )
 
 type pg struct {
-	conn      *gorm.DB
-	batchSize int
+	conn *gorm.DB
 }
 
 func NewPG(cfg config.PG) (*pg, error) {
