@@ -1,0 +1,36 @@
+syntax = "proto3";
+
+package pass_keeper;
+
+option go_package = "github.com/unbeman/ya-prac-go-second-grade/api/v1";
+
+import "google/protobuf/timestamp.proto";
+
+message Credential{
+  string local_id = 1;
+  string type = 2;
+  string meta_data = 3;
+  bytes secret = 4;
+  google.protobuf.Timestamp created_at = 5;
+  google.protobuf.Timestamp updated_at = 6;
+  google.protobuf.Timestamp deleted_at = 7;
+}
+
+message SaveRequest{
+  repeated Credential credentials = 1;
+}
+
+message SaveResponse{
+}
+
+message LoadRequest{
+}
+
+message LoadResponse{
+  repeated Credential credentials = 1;
+}
+
+service SyncService {
+  rpc Save(SaveRequest) returns (SaveResponse);
+  rpc Load(LoadRequest) returns (LoadResponse);
+}
